@@ -1,3 +1,4 @@
+//no-console.js
 "use strict";
 module.exports = function (context) {
     return {
