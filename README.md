@@ -4,17 +4,17 @@
 
 提供以下阅读格式
 
-- [Web版](https://azu.gitbooks.io/javascript-plugin-architecture/content/)
-- [PDF格式](https://www.gitbook.com/download/pdf/book/azu/javascript-plugin-architecture)
-- [ePub格式](https://www.gitbook.com/download/epub/book/azu/javascript-plugin-architecture)
-- [Mobi格式](https://www.gitbook.com/download/mobi/book/azu/javascript-plugin-architecture)
+- [Web版](https://ash0080.gitbooks.io/javascript-plugin-architecture/content/)
+- [PDF格式](https://www.gitbook.com/download/pdf/book/ash0080/javascript-plugin-architecture)
+- [ePub格式](https://www.gitbook.com/download/epub/book/ash0080/javascript-plugin-architecture)
+- [Mobi格式](https://www.gitbook.com/download/mobi/book/ash0080/javascript-plugin-architecture)
 
-你也可以从[GitHub](https://github.com/azu/JavaScript-Plugin-Architecture)直接获取arkdown格式
-不过我们建议阅读[Web版](https://azu.gitbooks.io/javascript-plugin-architecture/content/)
+你也可以从[GitHub](https://github.com/azu/JavaScript-Plugin-Architecture)直接获取Markdown格式
+不过我们建议阅读[Web版](https://ash0080.gitbooks.io/javascript-plugin-architecture/content/)
 
 本文关联的Twitter话题标签是[#js_plugin_book](https://twitter.com/search?f=tweets&q=%23js_plugin_book&src=typd "Twitter #js_plugin_book")
 
-更新信息可通过[RSS](https://github.com/azu/JavaScript-Plugin-Architecture/releases.atom)或[发布节点](https://github.com/azu/JavaScript-Plugin-Architecture/releases)订阅。
+更新信息可通过[RSS](https://github.com/ash0080/JavaScript-Plugin-Architecture/releases.atom)或[发布节点](https://github.com/ash0080/JavaScript-Plugin-Architecture/releases)订阅。
 
 <!-- textlint-disable -->
 
@@ -77,7 +77,7 @@ Reduxe使用**middelware**作为其扩展机制, 不过这里的**middelware**�
 
 本书供免费阅读,同时您也有权利增改其内容.
 
-[CONTRIBUTING.md](https://github.com/azu/JavaScript-Plugin-Architecture/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/ash0080/JavaScript-Plugin-Architecture/blob/master/CONTRIBUTING.md)
 关于提交本书建议, Pull Request, commit 等, 可阅读此链接
 
 关于错误,本文使用的 library 更新, 请通过Issue 或 Pull Request提交
