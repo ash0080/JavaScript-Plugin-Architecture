@@ -1,6 +1,6 @@
 # JavaScript Plugin Architecture [![Build Status](https://travis-ci.org/azu/JavaScript-Plugin-Architecture.svg?branch=master)](https://travis-ci.org/azu/JavaScript-Plugin-Architecture)
 
-本书主要讨论各种javascript库和工具的插件架构设计2
+本书主要讨论各种javascript库和工具的插件架构设计
 
 提供以下阅读格式
 
