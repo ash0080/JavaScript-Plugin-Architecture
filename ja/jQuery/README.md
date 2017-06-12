@@ -4,24 +4,24 @@
 
 jQuery允许我们通过`$.fn`,给jQuery对象添加带有返回值`$()`的method来扩展jQuery.
 
-如下例 `greenify` 插件, 让我们能够 call `$(document.body).greenify();` 
+如下例 `greenify` 插件, 让我们能够调用 `$(document.body).greenify();` 
 
 [import, greenify.js](../../src/jQuery/greenify.js)
 
-在实际应用场合, 我们必须在载入`greenify.js`之前,先载入`jquery.js`
+在实际使用时, 我们需要在载入`greenify.js`前,先载入`jquery.js`
 
 ```html
 <script src="jquery.js"></script>
 <script src="greenify.js"></script>
 ```
 
-## 它如何工作的?
+## 它是如何工作的?
 
 首先让我们看看jQuery的插件是如何工作的
 
-jQuery的插件写法如`$.fn.greenify = function (){}`,很像prototype扩展的方式. 
+jQuery的插件写法如`$.fn.greenify = function (){}`应用prototype的扩展规则. 
 
-我们看一下`jQuery.fn`的具体实现、实际就是`jQuery.prototype`的封装,所以这就是一种prototype扩展.
+`jQuery.fn`的实体是`jQuery.prototype`,其实质是prototype扩展.
 
 ```js
 // https://github.com/jquery/jquery/blob/2.1.4/src/core.js#L39
@@ -31,28 +31,28 @@ jQuery.fn = jQuery.prototype = {
 ```
 
 
-`$()`内部返回一个`new` jQuery 对象、这个jQuery 对象允许使用prototype扩展方法.
+`$()`内部返回一个`new` jQuery 对象、这个jQuery 对象可以使用prototype进行扩展.
 
 ```js
 $(document.body); // 返回值是 jQuery instance
 ```
 
-也就是说, 你可以认为jQuery插件就是直接使用prototype.
+也就是说, jQuery插件直接使用prototype.
 
-## 适用于哪些场合?
+## 适用于哪些场景?
 
 我们了解了jQuery插件的实现原理,现在来考虑一下这种方式适用于哪些场合.
 
 首先,因为这是prototype的简单封装,所以适用于prototype同样的场合.
 其次,因为可以动态添加methods,所以你可以添加例如monkey patch来覆盖已存在的插件方法.
 
-## 不适用于哪些场合?
+## 不适用于哪些场景?
 
 与prototype相似, prototype扩展方式过于灵活,jQuery本身几乎无法约束这些插件的行为.
 
 另外,扩展依赖于jQuery的实现,插件很可能因为jQuery的版本更新而不可用.
 
-尽管jQuery制定了不动undocumented APIs的规则,但也不总是被严格遵守.
+尽管jQuery声称不会去更改那些未文档化的API代码,但也不总是严格遵守.
 
 ## 模仿实现
 
@@ -68,9 +68,9 @@ $(document.body); // 返回值是 jQuery instance
 calculator.fn = calculator.prototype;
 ```
 
-我们在此声明了一个`calculator(初始值)`的稍微有点特殊的构造器,但我们暂未加入任何扩展功能.
+我们在此声明了一个`calculator(初始值)`的稍微有点特殊的构造器,但我们暂未加入任何实际功能.
 
-[calculator.js](#calculator.js)接下来,我们要给计算器加入四则运算操作.
+[calculator.js](#calculator.js)接下来,我们来给计算器添加四则运算操作.
 
 [import, calculator-plugin.js](../../src/jQuery/calculator-plugin.js)
 
@@ -83,11 +83,12 @@ calculator.fn = calculator.prototype;
 <script src="calculator-plugin.js"></script>
 ```
 
-通过这种方式,我们现实现了例如`calculator#add`这样的方法,所以,你可以这样写:
+通过这种方式,我们现在实现了例如`calculator#add`这样的方法,所以,你可以这样写:
 
 [import, calculator-example.js](../../src/jQuery/calculator-example.js)
 
-现在,我们通过实例理解了使用javascript的`prototype`进行扩展的这种方法,这并不需要什么特殊的实现手段. 我们也可以简单总结为一句话,「用`calculator.fn`替代`calculator.prototype`来进行扩展」
+通过这个例子,我们看到了使用javascript的`prototype`进行扩展的方法,并没有什么特别之处. 
+我们可以简单总结为「用`calculator.fn`代替`calculator.prototype`进行扩展」
 
 ## 生态
 
@@ -98,16 +99,17 @@ calculator.fn = calculator.prototype;
 <script src="greenify.js"></script>
 ```
 
-这种实现方法在CommonJS或ES6模组的形式下不能使用,因此在Node.js生态里是不存在的.也可以说,这种机制有点不适合CommonJS或ES6.
+这种实现方法在CommonJS或ES6模组的形态下不能使用,因此在Node.js生态里是不存在的.
+换句话说,这种机制不适用于CommonJS或ES6.
 
 ## 总结
 
-本章我们学习了jQuery plugin 的建构方式:
+本章我们学习了jQuery plugin 的建构方式,可归纳为:
 
 - jQuery plugin 通过 `jQuery.fn` 扩展
-- `jQuery.fn` 等同于 `jQuery.prototype`
-- jQuery plugin 是 `jQuery.prototype` 的一种衍生
-- 很难控制插件的行为,因为你可以做任何事情,非常自由
+- `jQuery.fn` 等于 `jQuery.prototype`
+- jQuery plugin 扩展在 `jQuery.prototype` 
+- (jQuery本身)很难控制插件的行为,因为(prototype)可以做任何事,非常自由
 
 ## 参考资料
 
