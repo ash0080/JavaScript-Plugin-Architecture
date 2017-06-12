@@ -68,13 +68,13 @@ console.log("Hello!");
 
 - [JavaScript AST explorer](http://astexplorer.net/#/FNrLHi8ngW "JavaScript AST explorer")
 
-ESLint基于rules验证AST, 比如我们定义在[no-console.js](#no-console.js)中的`console.log`.
+ESLint会根据我们定义的rule检查AST,比如我们这里写了[no-console.js](#no-console.js)这个rule,(那么根据这个rule)我们的代码中就不能出现console.log. 译注:实际上no-console.js里写了console不能出现,console.dir()等一概不可以) 
 
-回到如何书写rules的话题, `context`实际上是一个function, 而rule的主体部分返回一个包含了`context`操作的方法的对象.译注:看代码
+回到如何书写rules的话题, `context`毫无疑问是一个拥有一些实例方法的对象, 而rule返回一个对象,对象包含了一个方法,方法中调用`context`对象的实例方法. 译者注:直接看代码更好理解一些
 
-这个对象有个以节点类型命名的方法. 遍历AST时, 当「访问到`"MemberExpression"` 类型的节点时」,我们在rule中所声明的通知(方法)被触发.
+返回对象的方法以节点类型命名,当遍历AST,每次「访问到`"MemberExpression"` 这种类型的节点时」,我们在rule中所声明的通知(回调方法)就会被触发.
 
-之前所写的`console.log`在`MemberExpression`类型节点的AST中,可以表述为以下对象.
+(前面我们写的)代码中的`console.log`, 在AST中以`MemberExpression`类型节点形式可以写为以下对象:
 
 ```json
 {
@@ -90,9 +90,9 @@ ESLint基于rules验证AST, 比如我们定义在[no-console.js](#no-console.js)
     }
 }
 ```
-如[no-console.js](#no-console.js)rule所示,当一个`MemberExpression`类型节点的`node.object.name === "console"`条件满足时, report 一个 error.
+如[no-console.js](#no-console.js)rule所示,当一个`MemberExpression`类型节点满足条件`node.object.name === "console"`时,程序会认为`代码中含有console`, 于是report一个错误.
 
-如果AST检索比较难以理解,这里提供了一个工具帮助理解检索过程.
+如果关于AST的检索过程比较难以理解,这里提供了一个工具帮助我们理解整个检索过程.
 
 - [azu.github.io/visualize_estraverse/](http://azu.github.io/visualize_estraverse/ "visualize estraverse step")
 
@@ -109,16 +109,15 @@ debug("Hello");
 <p>若需正常浏览本视频,浏览器需支持webm或mp4格式</p>
 </video>
 
-书写ESLint 规则的其他方法,你可以查看官方文档或下面列出的文章.
+PS. 如果要深入了解如何书写ESLint的rule,可以查看官方文档及以下文章.
 
 - [Documentation - ESLint - Pluggable JavaScript linter](http://eslint.org/docs/developer-guide/working-with-rules "Documentation - ESLint - Pluggable JavaScript linter")
 - [Find bugs in code with code! | Cyber Agent Official Engineer Blog](http://ameblo.jp/principia-ca/entry-11837554210.html "Find bugs in code with code! | Cyber Agent Official Engineer Blog")
 
-## 它如何工作的?
+## 它是如何工作的?
 
-大致来说,ESLint的工作原理是将代码解析为AST,然后利用js写的rule来检测AST.
-
-接下来,我们就来看看这个机制是怎样把一条rule当成plugin来工作的.
+大致来说,ESLint的工作原理是将代码解析为AST,然后用js写的rule来验证AST.
+然后,我们来看看rule插件来工作的.
 
 1. 每一条rule都需注册`node.type`事件
 2. 当遍历AST时,`node.type`事件被击发
