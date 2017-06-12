@@ -22,7 +22,7 @@ ESLint使用`.eslintrc`配置文件定义使用的rules,具体操作方法请参
 
 ESLint里的rule可以表述为一个导出以下function的模组,该function传入一个`context`对象,并返回一个与之对应的对象.
 
-<a name="no-console.js"></a>
+<a name="no-console.js">no-console.js</a>
 [import, no-console.js](../../src/ESLint/no-console.js)
 
 ESLint基于AST检测代码,而不是直接检查字符串,我们这里略过AST的实现细节,我们大致可以将AST理解为表征javascript代码的树状结构对象.
