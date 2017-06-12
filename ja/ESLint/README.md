@@ -4,35 +4,34 @@
 
 [ESLint](http://eslint.org/ "ESLint")是一个用javascript书写的规则来验证javascript代码的检验工具. 译注:有点绕,其实就是ESLint的rule都是用js写的.
 
-大致来说, ESLint根据javascript代码生成AST(abstract syntax tree 抽象语法树), 然后按照写好的rule校验AST,并输出 errors 和 warnings
+大致来说, ESLint根据javascript代码先生成AST(abstract syntax tree 抽象语法树), 然后按照写好的rule验证AST,并输出 errors 和 warnings
 
-rule能够写成一个插件, 实际上所有ESLint的rules都是以插件形式实现的.
+rule可用插件的形式书写, 实际上所有ESLint的rules都是以插件形式存在的.
 
+> The pluggable linting utility for JavaScript and JSX
 
-> The **pluggable** linting utility for JavaScript and JSX
+在ESLint官网, 你可以看到以上这句话, 说明ESLint的设计架构十分强调插件.
 
-
-在ESLint官网, 你可以看到以上这句话, 说明ESLint的设计架构非常偏重于插件.
-
-接下来,就让我们看看ESLint的架构.
+接下来,就让我们看看ESLint的插件架构.
 
 ## 如何写(插件)?
 
-ESLint使用`.eslintrc`配置文件定义使用的rules,具体操作方法请参考文档.
+ESLint使用`.eslintrc`配置文件定义使用的rules,具体操作方法请参考官方文档.
 
 - [Documentation - ESLint - Pluggable JavaScript linter](http://eslint.org/docs/user-guide/configuring "Documentation - ESLint - Pluggable JavaScript linter")
 
-ESLint里,一个rule可以表述为一个导出以下funtion的模组,该function传入一个`context`对象,并返回一个与之对应的对象.
+ESLint里的rule可以表述为一个导出以下function的模组,该function传入一个`context`对象,并返回一个与之对应的对象.
 
+<a name="no-console.js"></a>
 [import, no-console.js](../../src/ESLint/no-console.js)
 
-ESLint, 基于AST检测代码,而不是检测字符串,我们这里略过AST的细节,我们大致可以认为AST是用一个树状结构来表述javascript对象.
+ESLint基于AST检测代码,而不是直接检查字符串,我们这里略过AST的实现细节,我们大致可以将AST理解为表征javascript代码的树状结构对象.
 
 ```js
 console.log("Hello!");
 ```
 
-code 转换为 AST表述如下
+代码经过转换, 会变成以下的AST对象
 
 ```json
 {
@@ -70,7 +69,7 @@ code 转换为 AST表述如下
 
 - [JavaScript AST explorer](http://astexplorer.net/#/FNrLHi8ngW "JavaScript AST explorer")
 
-ESLint 基于rules检测AST, 比如我们定义在[no-console.js](#no-console.js)中的`console.log`.
+ESLint基于rules验证AST, 比如我们定义在[no-console.js](#no-console.js)中的`console.log`.
 
 回到如何书写rules的话题, `context`实际上是一个function, 而rule的主体部分返回一个包含了`context`操作的方法的对象.译注:看代码
 
