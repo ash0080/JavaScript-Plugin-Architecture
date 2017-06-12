@@ -22,6 +22,15 @@
 
 <!-- textlint-enable -->
 
+## 译者序
+
+Javascript是一门十分自由的语言.相比其他语言,Javascript的既有库可谓浩瀚,实际工作中我们往往`拿来主义`,通过数个既有库,我们能够较为轻松地完成工作,
+当我们有能力完成Application层面的工作之后,下一步该往何处去? 我们该如何写出`框架`层级的东西呢?
+这时我们面对的第一个问题往往是: 如何去规划一个插件架构?
+带着这个问题,我很偶然地发现了@azu的这本书,受益良多,于是花了一些时间翻译,希望也能与更多人分享,不仅仅是这些分析案例,更重要的是学习方法.
+
+原文:      [gitbook](https://azu.gitbooks.io/javascript-plugin-architecture/content/)
+原Repo:     [github](https://github.com/azu/JavaScript-Plugin-Architecture) 
 
 ## 简介
 
