@@ -1,124 +1,118 @@
 # jQuery
 
-> この文章は[jQuery](http://jquery.com/ "jQuery") 2.1.4を元に書かれています。
+> 本文基于[jQuery](http://jquery.com/ "jQuery") 2.1.4版本
 
-jQueryでは`$.fn`を拡張することで、`$()`の返り値となるjQueryオブジェクトにメソッドを追加することができます。
+jQuery允许我们通过`$.fn`,给jQuery对象添加带有返回值`$()`的method来扩展jQuery.
 
-次の`greenify`プラグインでは、`$(document.body).greenify();`というメソッド呼び出しが可能になります。
+如下例 `greenify` 插件, 让我们能够 call `$(document.body).greenify();` 
 
 [import, greenify.js](../../src/jQuery/greenify.js)
 
-実際に利用するため際は、`jquery.js`を読み込んだ後に`greenify.js`を読み込ませる必要があります。
+在实际应用场合, 我们必须在载入`greenify.js`之前,先载入`jquery.js`
 
 ```html
 <script src="jquery.js"></script>
 <script src="greenify.js"></script>
 ```
 
-## どのような仕組み?
+## 它如何工作的?
 
-このjQueryプラグインがどのような仕組みで動いているのかを見てみましょう。
+首先让我们看看jQuery的插件是如何工作的
 
-jQueryプラグインはprototype拡張のように `$.fn.greenify = function (){}` と拡張するルールでした。
+jQuery的插件写法如`$.fn.greenify = function (){}`,很像prototype扩展的方式. 
 
-`jQuery.fn`の実装を見てみると、実態は`jQuery.prototype`なので、prototype拡張していることがわかります。
+我们看一下`jQuery.fn`的具体实现、实际就是`jQuery.prototype`的封装,所以这就是一种prototype扩展.
 
 ```js
 // https://github.com/jquery/jquery/blob/2.1.4/src/core.js#L39
 jQuery.fn = jQuery.prototype = {
-    // prototypeの実装
+    // prototype的实现
 };
 ```
 
 
-`$()`は内部的に`new`をしてjQueryオブジェクトを返すので、このjQueryオブジェクトではprototypeに拡張したメソッドが利用できます。
+`$()`内部返回一个`new` jQuery 对象、这个jQuery 对象允许使用prototype扩展方法.
 
 ```js
-$(document.body); // 返り値はjQueryのインスタンス
+$(document.body); // 返回值是 jQuery instance
 ```
 
-つまり、jQueryプラグインはJavaScriptのprototypeをそのまま利用しているだけに過ぎないということがわかります。
+也就是说, 你可以认为jQuery插件就是直接使用prototype.
 
-## どのような用途に向いている?
+## 适用于哪些场合?
 
-jQueryプラグインの仕組みがわかったのでどのような用途に有効な仕組みなのか考えてみましょう。
+我们了解了jQuery插件的实现原理,现在来考虑一下这种方式适用于哪些场合.
 
-単純なprototype拡張なので、利点はJavaScriptのprototypeと同様です。
-動的にメソッドを追加するだけではなく、既存の実装を上書きするmonkey patchのようなものもプラグインとして追加することができます。
+首先,因为这是prototype的简单封装,所以适用于prototype同样的场合.
+其次,因为可以动态添加methods,所以你可以添加例如monkey patch来覆盖已存在的插件方法.
 
-## どのような用途に向いていない?
+## 不适用于哪些场合?
 
-これもJavaScriptのprototypeと同様で、prototypeによる拡張は柔軟すぎるため、
-jQuery自体がプラグインのコントロールをすることは難しいです。
+与prototype相似, prototype扩展方式过于灵活,jQuery本身几乎无法约束这些插件的行为.
 
-また、プラグインが拡張するjQueryの実装に依存しやすいため、
-jQueryのバージョンによって動かなくなるプラグインが発生しやすいです。
+另外,扩展依赖于jQuery的实现,插件很可能因为jQuery的版本更新而不可用.
 
-jQueryではドキュメント化されてないAPIを触っていけないというルールを設けていますが、
-これは必ずしも守られているわけではありません。
+尽管jQuery制定了不动undocumented APIs的规则,但也不总是被严格遵守.
 
-## 実装してみよう
+## 模仿实现
 
-`calculator`という拡張可能な計算機をjQuery Pluginと同じ方法で作ってみたいと思います。
+我们现在来写一个可扩展的`calculator`计算器,来实现jQuery plugin类似的机制.
 
-`calculator` は次のような形となります。
+`calculator` 代码如下
 
 [import, calculator.js](../../src/jQuery/calculator.js)
 
-`$.fn`と同様に`prototype`へのaliasを貼っているだけのただのコンストラクタ関数です。
+与`$.fn`相似,我们使用`fn`作为`prototype`的别名
 
 ```js
 calculator.fn = calculator.prototype;
 ```
 
-`calculator(初期値)`と書けるようにしているため、少し特殊なコンストラクタとなっていますが、この拡張の仕組みとは関係ないのでとりあえず置いておきましょう。
+我们在此声明了一个`calculator(初始值)`的稍微有点特殊的构造器,但我们暂未加入任何扩展功能.
 
-[calculator.js](#calculator.js)には何も実装が入ってないので、プラグインで四則演算の実装を追加してみます。
+[calculator.js](#calculator.js)接下来,我们要给计算器加入四则运算操作.
 
 [import, calculator-plugin.js](../../src/jQuery/calculator-plugin.js)
 
-[calculator-plugin.js](#calculator-plugin.js)では、`calculator.fn.add`というように`add`というメソッドを追加しています。
+在[calculator-plugin.js](#calculator-plugin.js)里,我们通过`calculator.fn.add`的方式添加一个`add`方法.
 
-また、モジュールで依存関係を示していますがやっていることはjQueryと同じで、[calculator.js](#calculator.js)を読み込んでから[calculator-plugin.js](#calculator-plugin.js)を読み込んでいるだけですね。
+这里,module的依存关系与jQuery相同,我们需要先引用[calculator.js](#calculator.js),然后再引用[calculator-plugin.js](#calculator-plugin.js)
 
 ```html
 <script src="calculator.js"></script>
 <script src="calculator-plugin.js"></script>
 ```
 
-これを使うと`calculator#add`といったメソッドが利用できるようになるので、次のように書くことができます。
+通过这种方式,我们现实现了例如`calculator#add`这样的方法,所以,你可以这样写:
 
 [import, calculator-example.js](../../src/jQuery/calculator-example.js)
 
-実装をみてもらうと分かりますが、JavaScriptの`prototype`の仕組みをそのまま利用しています。
-そのため、特別な実装は必要なく
-「拡張する時は`calculator.prototype`の代わりに`calculator.fn`を拡張してください」
-というルールがあるだけともいえます。
+现在,我们通过实例理解了使用javascript的`prototype`进行扩展的这种方法,这并不需要什么特殊的实现手段. 我们也可以简单总结为一句话,「用`calculator.fn`替代`calculator.prototype`来进行扩展」
 
-## エコシステム
+## 生态
 
-このプラグインの仕組みはあるグローバルオブジェクトに依存しており、
-これはスクリプトを`<script>`要素で読み込むだけで拡張することを前提とした作りです。
+这种插件机制依赖于确定的global对象,应用的前提是要能通过`<script>`标签引用脚本.
 
 ```html
 <script src="jquery.js"></script>
 <script src="greenify.js"></script>
 ```
 
-Node.jsで使われているCommonJSやES6 Modulesなどがなかった時代に作られた仕組みなので、
-それらと組み合わせる際には少し不向きな拡張の仕組みといえるかもしれません。
+这种实现方法在CommonJS或ES6模组的形式下不能使用,因此在Node.js生态里是不存在的.也可以说,这种机制有点不适合CommonJS或ES6.
 
-## まとめ
+## 总结
 
-ここではjQueryのプラグインアーキテクチャについて学びました。
+本章我们学习了jQuery plugin 的建构方式:
 
-- jQueryプラグインは `jQuery.fn` を拡張する
-- `jQuery.fn` は `jQuery.prototype` と同じである
-- jQueryプラグインとは`jQuery.prototype`を拡張したものといえる
-- 何でもできるためプラグインが行うことを制御することのは難しい
+- jQuery plugin 通过 `jQuery.fn` 扩展
+- `jQuery.fn` 等同于 `jQuery.prototype`
+- jQuery plugin 是 `jQuery.prototype` 的一种衍生
+- 很难控制插件的行为,因为你可以做任何事情,非常自由
 
-## 参考資料
+## 参考资料
 
 - [Plugins | jQuery Learning Center](https://learn.jquery.com/plugins/ "Plugins | jQuery Learning Center")
 - [jQuery拡張の仕組み 〜 JSおくのほそ道 #013 - Qiita](http://qiita.com/hosomichi/items/29b19ed3ebd0df9361ae)
 - [The npm Blog — Using jQuery plugins with npm](http://blog.npmjs.org/post/112064849860/using-jquery-plugins-with-npm "The npm Blog — Using jQuery plugins with npm")
+
+

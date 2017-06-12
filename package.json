@@ -92,6 +92,7 @@
   "dependencies": {
     "esprima": "^2.5.0",
     "estraverse": "^4.1.0",
+    "gitbook-plugin-richquotes": "0.0.9",
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.6",
     "jquery": "^3.0.0"

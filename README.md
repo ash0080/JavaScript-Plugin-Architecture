@@ -1,20 +1,20 @@
 # JavaScript Plugin Architecture [![Build Status](https://travis-ci.org/azu/JavaScript-Plugin-Architecture.svg?branch=master)](https://travis-ci.org/azu/JavaScript-Plugin-Architecture)
 
-この書籍はJavaScriptのライブラリやツールにおけるプラグインアーキテクチャについて見ていくことを目的としたものです。
+本书主要讨论各种javascript库和工具的插件架构设计
 
-次の形式で読むことができます。
+提供以下阅读格式
 
 - [Web版](https://azu.gitbooks.io/javascript-plugin-architecture/content/)
-- [PDF形式](https://www.gitbook.com/download/pdf/book/azu/javascript-plugin-architecture)
-- [ePub形式](https://www.gitbook.com/download/epub/book/azu/javascript-plugin-architecture)
-- [Mobi形式](https://www.gitbook.com/download/mobi/book/azu/javascript-plugin-architecture)
+- [PDF格式](https://www.gitbook.com/download/pdf/book/azu/javascript-plugin-architecture)
+- [ePub格式](https://www.gitbook.com/download/epub/book/azu/javascript-plugin-architecture)
+- [Mobi格式](https://www.gitbook.com/download/mobi/book/azu/javascript-plugin-architecture)
 
-[GitHub](https://github.com/azu/JavaScript-Plugin-Architecture)上で直接Markdownファイルを読むこともできますが、
-その場合は[Web版](https://azu.gitbooks.io/javascript-plugin-architecture/content/)で読むことをオススメします。
+你也可以从[GitHub](https://github.com/azu/JavaScript-Plugin-Architecture)直接获取arkdown格式
+不过我们建议阅读[Web版](https://azu.gitbooks.io/javascript-plugin-architecture/content/)
 
-Twitterのハッシュタグは[#js_plugin_book](https://twitter.com/search?f=tweets&q=%23js_plugin_book&src=typd "Twitter #js_plugin_book")
+本文关联的Twitter话题标签是[#js_plugin_book](https://twitter.com/search?f=tweets&q=%23js_plugin_book&src=typd "Twitter #js_plugin_book")
 
-更新情報は[RSS](https://github.com/azu/JavaScript-Plugin-Architecture/releases.atom)や[リリースノート](https://github.com/azu/JavaScript-Plugin-Architecture/releases)から見ることができます。
+更新信息可通过[RSS](https://github.com/azu/JavaScript-Plugin-Architecture/releases.atom)或[发布节点](https://github.com/azu/JavaScript-Plugin-Architecture/releases)订阅。
 
 <!-- textlint-disable -->
 
@@ -23,63 +23,64 @@ Twitterのハッシュタグは[#js_plugin_book](https://twitter.com/search?f=tw
 <!-- textlint-enable -->
 
 
-## はじめに
+## 简介
 
-JavaScriptの世界では1つの大きなライブラリよりも小さいなものを組み合わせていくようなスタイルが多く見られます。
-小さなものを組み合わせて作るためには、プラグインと呼ばれる拡張の仕組みが必要となります。
-またそのようなプラグインがたくさんあるエコシステムの土台を作るには、プラグインアーキテクチャが重要になるといえます。
+在Javascript的世界中, 存在着多种编码风格,用于将许多细小的功能组合在一起,而不是直接创建一个臃肿庞大的库.
+为了将细小的功能组合在一起,就需要一种称作「插件扩展」的机制.
+另外, 插件架构对于创建一个拥有诸多插件的软件生态非常重要.
 
-> ソフトウェアの構造に「プラグイン機構」を設け、ユーザコミュニティから開発者コミュニティへの質的な転換を図るのは、ソフトウェア設計からエコシステム設計へとつながる  
-> -- [OSS開発の活発さの維持と良いソフトウェア設計の間には緊張関係があるのだろうか? - t-wadaのブログ](http://t-wada.hatenablog.jp/entry/active-oss-development-vs-simplicity "OSS開発の活発さの維持と良いソフトウェア設計の間には緊張関係があるのだろうか? - t-wadaのブログ")
+> 插件架构的引入会推进从「用户社区」向「开发者社区」, 从「软件开发」向「软件生态」的质的转变
+> -- [开源软件开发和维护活跃度与良好的软件设计之间是否存在着必然的联系? - t-wada 的博客](http://t-wada.hatenablog.jp/entry/active-oss-development-vs-simplicity "OSS開発の活発さの維持と良いソフトウェア設計の間には緊張関係があるのだろうか? - t-wadaのブログ")
 
-この書籍では、JavaScriptにおけるプラグインアーキテクチャやそのエコシステムを形成してるライブラリやツールなどの実装を学ぶことが目的となっています。
+本书聚焦于从这类生态中研究和学习javascript的插件架构
 
-## この書籍の内容について
+## 本书内容
 
 ### [jQuery](ja/jQuery/README.md)
 
-jQueryのプラグインについて解説しています。
-`<script>`タグをベースとしたプラグインアーキテクチャについて解説しています。
+展示了jQuery 插件机制
+展示了一种基于`<script>`标签的插件架构
 
 ### [ESLint](ja/ESLint/README.md)
 
-ESLintのルールを拡張する仕組みについて解説しています。
-ESLintではJavaScriptのコードをパースして作成されたASTを元にコードのLintを行います。
-実際にESLintのルールを解釈できる小さな実装を作りながらプラグインの仕組みについて学びます。
+本章会解释ESLint的rules的扩展机制
+ESLint将javascript代码转换为AST,然后在AST的基础上实现代码检查
+通过试写一个实例插件来了解ESLint rules是如何工作的.
 
 ### [Connect](ja/connect/README.md)
 
-Connectの **middleware** と呼ばれるプラグインアーキテクチャについて解説しています。
-Node.js以外においても_Rack_などHTTPサーバーでよく見られるプラグインを使った階層構造について学びます。
+展示了Connect的称为**middleware**的插件架构
+这种分层插件结构常见于HTTP servers库,除Node.js之外,还可以在比如 _Rack_ 中见到
 
 ### [gulp](ja/gulp/README.md)
 
-**タスク自動化ツール**として知られるgulpのプラグインアーキテクチャについて解説しています。
-gulpではデータの流れとして既存のNode.js Streamを使い、そこで流すデータとしてvinylオブジェクトを利用します。
-実際にgulpプラグインを書きながら、gulpのプラグインの仕組みについて学びます。
+展示了著名**自动化任务工具**gulp的插件架构
+Gulp使用Node.js的Stream实现其数据流,并使用vinyl对象作为其数据
+通过实际写一个gulp插件来学习gulp的插件架构
 
 ### [Redux](ja/Redux/README.md)
 
-アプリケーションのStateを管理ライブラリのReduxのプラグインアーキテクチャについて解説しています。
-Reduxでは **middleware** と呼ばれる拡張の仕組みを持っていますが、Connectとの類似点や相違点があります。
-小さなReduxの実装を作りながら **middleware** の仕組みについて学びます。
+解释了Redux应用状态(state)管理框架的插件架构
+Reduxe使用**middelware**作为其扩展机制, 不过这里的**middelware**和Connect的存在相似之处也有不同之处.
+我们通过实际编写一个Redex的**middleware** 我来学习Redux的插件架构
 
 ## Contributing
 
-この書籍は無料で読むことができ、同時に修正や新しいページを書く権利があります。
+本书供免费阅读,同时您也有权利增改其内容.
 
-[CONTRIBUTING.md](https://github.com/azu/JavaScript-Plugin-Architecture/blob/master/CONTRIBUTING.md)に、書籍で扱うべきプラグインアーキテクチャのProposalの書き方や
-Pull Request、コミットのやりかたなどが書かれています。
+[CONTRIBUTING.md](https://github.com/azu/JavaScript-Plugin-Architecture/blob/master/CONTRIBUTING.md)
+关于提交本书建议, Pull Request, commit 等, 可阅读此链接
 
-間違いやライブラリのアップデートへの追従など何かあれば、IssueやPull Requestをよろしくお願いします。
+关于错误,本文使用的 library 更新, 请通过Issue 或 Pull Request提交
 
-ソースコードはすべてGitHubに公開されています。
+所有源代码均公开于Github.
 
 - [azu/JavaScript-Plugin-Architecture](https://github.com/azu/JavaScript-Plugin-Architecture)
 
 ## License
 
 MIT/CC BY-NC © azu
+本中文版由[圈爷](https://github.com/ash0080) 翻译
 
-- コードはMITライセンスで利用できます
-- 文章は[CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/ "CC BY-NC 4.0")で利用できます
+- 源代码基于MIT license
+- 文章基于[CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/ "CC BY-NC 4.0") license

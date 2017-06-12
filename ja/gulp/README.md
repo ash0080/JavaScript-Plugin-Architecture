@@ -1,29 +1,25 @@
 # gulp
 
-> この文章は[gulp](http://gulpjs.com/ "gulp") 3.9.0を元に書かれています。
+> 本文基于[gulp](http://gulpjs.com/ "gulp") 3.9.0 版本.
 
-[gulp](http://gulpjs.com/ "gulp")はNode.jsを使ったタスク自動化ツールです。
-ビルドやテストなどといったタスクを実行するためのツールで、
-それぞれのタスクをJavaScriptで書くことができるようになっています。
+[gulp](http://gulpjs.com/ "gulp")是Node.js的自动化脚本工具. 可以执行build, test之类的任务, 每条任务都可以用javascript书写.
 
-ここでいうタスクとは複数の処理からなる処理の固まりのことです。
-このタスクを定義するAPIとして`gulp.task`が用意されています。
-また、それぞれの処理はNode.jsの[Stream](https://nodejs.org/api/stream.html "Stream")を使いつなげることで、複数の処理を一時ファイルなしでできるようになっています。
+这里所说的task是由多个步骤组成的过程块.
+`Gulp.task`作为API用于定义task
+另外、多个process通过node.js的[Stream](https://nodejs.org/api/stream.html "Stream")连接,过程中无需产生临时文件.
+用户可以通过载入模组,使用pipe()连接模组来定义task.
 
-それぞれの処理はgulpのプラグインという形でモジュール化されているため、
-利用者はモジュールを読み込み、`pipe()`で繋ぐだけでタスクの定義ができるツールとなっています。
+## 如何写(插件)?
 
-## どう書ける?
+举例来说, 我们需要处理一个[Sass](http://sass-lang.com/ "Sass")格式的文件.
 
-たとえば、[Sass](http://sass-lang.com/ "Sass")で書いたファイルを次のように処理したいとします。
+1. 读取`sass/*.scss`文件
+2. 使用`sass`编译读取的sass文件.
+3. 使用`autoprefixture`预处理前序生成的css文件
+4. 用`minify`压缩每个css文件
+5. 将压缩后的CSS文件循环放置到`css`文件夹
 
-1. `sass/*.scss`のファイルを読み込む
-2. 読み込んだsassファイルを`sass`でコンパイル
-3. CSSとなったファイルに`autoprefixture`で接頭辞をつける
-4. CSSファイルをそれぞれ`minify`で圧縮する
-5. 圧縮したCSSファイルをそれぞれ`css`ディレクトリに出力する
-
-この一連の処理は次のようなタスクとして定義することができます。
+这一串连续处理的进程可以定义为以下的tasks
 
 ```js
 import gulp from "gulp";
@@ -39,45 +35,42 @@ gulp.task("sass", function() {
         .pipe(gulp.dest("css"));
 });
 ```
-
-ここでは、gulpプラグインの仕組みについて扱うので、gulpの使い方について詳しくは以下を参照してください。
+因为本文主要是要了解gulp插件的实现原理,所以gulp的详细使用方法可以参考以下文档.
 
 - [gulp/docs at master · gulpjs/gulp](https://github.com/gulpjs/gulp/tree/master/docs)
 - [現場で使えるgulp入門 - gulpとは何か | CodeGrid](https://app.codegrid.net/entry/gulp-1)
 - [gulp入門 (全12回) - プログラミングならドットインストール](http://dotinstall.com/lessons/basic_gulp)
 
-## どのような仕組み?
+## 它如何工作的?
 
-実際にgulpプラグインを書きながら、どのような仕組みで処理同士が連携を取り動作しているのかを見ていきましょう。
+让我们实际看一下gulp的插件是如何在一起连携工作的.
 
-先ほどのgulpタスクの例では、すでにモジュール化された処理を`pipe`で繋げただけで、
-それぞれの処理がどのように実装されているかはよく分かりませんでした。
+在之前的gulp task的例子中,我们只是简单地将每个模组用`pipe`连在一起,这里我并不知道每一个处理是如何实现的.
 
-ここでは`gulp-prefixer`というgulpプラグインを書いていきます。
-`gulp-prefixer`は与えられたそれぞれのファイルに対して先頭に特定の文字列の追加を行うプラグインです。
+接下来,我要写一个叫做`gulp-prefixer`的插件, `gulp-prefixer`插件在每一个给定的文件前加上一个指定的字符串.
 
-同様の名前のプラグインが公式のドキュメントで「プラグインの書き方」の例として紹介されているので合わせて見るとよいでしょう。
+在官方文档「how to write a plug-in」中,有一个相似的插件,所以你也可以同时看一下官方文档中的这个例子.
 
 - [gulp/docs/writing-a-plugin](https://github.com/gulpjs/gulp/tree/master/docs/writing-a-plugin "gulp/docs/writing-a-plugin at master · gulpjs/gulp")
 - [gulp/dealing-with-streams.md](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/dealing-with-streams.md "gulp/dealing-with-streams.md at master · gulpjs/gulp")
 
-多くのgulpプラグインはオプションを受け取り、NodeのStreamを返す関数として実装されます。
+有很多gulp插件接受options参数并实现返回Node's Stream对象.
 
 [import gulp-prefixer.js](../../src/gulp/gulp-prefixer.js)
 
-ここで実装した`gulp-prefixer`は、次のようにしてタスクに組み込むことができます。
+我们写的这个`gulp-prefixer`插件, 可按以下方式嵌入task中.
 
 [import gulpfile.babel.js](../../src/gulp/gulpfile.babel.js)
 
-この`default`タスクは次のような処理が行われます。
+`default` task 包含以下处理步骤.
 
-1. `./*.*`にマッチするファイルを取得(すべてのファイル)
-2. 取得したファイルの先頭に"prefix text"という文字列を追加する
-3. 変更したファイルを`build/`ディレクトリに出力する
+1. 从`./*.*`获取文件(当前目录下全部文件)
+2. 添加`prefix text`到全部获取的文件头部
+3. 把修改后的文件输出到`build/`文件夹
 
 ### Stream
 
-[gulp-prefixer.js](#gulp-prefixer.js)を見てみると、`gulpPrefixer`という[Transform Stream](https://nodejs.org/api/stream.html#stream_class_stream_transform "stream.Transform")のインスタンスを返していることが分かります。
+调用[gulp-prefixer.js](#gulp-prefixer.js)文件中的`gulpPrefixer`方法将返回一个[Transform Stream](https://nodejs.org/api/stream.html#stream_class_stream_transform "stream.Transform")实例
 
 ```js
 let gulpPrefixer = function (prefix) {
@@ -104,58 +97,54 @@ let gulpPrefixer = function (prefix) {
 export default gulpPrefixer;
 ```
 
-Transform Streamというものが出てきましたが、Node.jsのStreamは次の4種類があります。
+我们这里用了 Transform Stream, Node.js的Stream类一共有4种:
 
 - Readable Stream
 - Transform Stream
 - Writable Stream
 - Duplex Stream
 
-今回の`default`タスクの処理をそれぞれ当てはめると次のようになっています。
+我们定义的`default` task按以下形式传递stream
 
-1. `./*.*`にマッチするファイルを取得 = Readable Stream
-2. 取得したファイルの先頭に"prefix text"という文字列を追加する = Transform Stream
-3. 変更したファイルを `build/` ディレクトリに出力する = Writable Stream
+1. 从`./*.*`获取文件(当前目录下全部文件) = Readable Stream
+2. 添加`prefix text`到全部获取的文件头部 = Transform Stream
+3. 把修改后的文件输出到`build/`文件夹 = Writable Stream
 
-あるファイルを _Read_ して、 _Transform_ したものを、別のところに _Write_ としているというよくあるデータの流れといえます。
+整个过程可以理解为, 文件被 _Read_, 接着 _Transform_, 最后被 _Write_ 的数据操作流程
 
-[gulp-prefixer.js](#gulp-prefixer.js)では、gulpから流れてきたデータをStreamで受け取り、
-そのデータを変更したもの次へ渡すTransform Streamとなっています。
+在[gulp-prefixer.js](#gulp-prefixer.js)中,data以stream的形式被传入,转换为Transform Stream的形式传递到下一步骤.
 
-「gulpから流れてきたデータ」を扱うために`readableObjectMode`と`writableObjectMode`をそれぞれ`true`にしています。
-この _ObjectMode_ というのは名前のとおり、Streamでオブジェクトを流すための設定です。
+为了处理「gulp中的数据流」`readableObjectMode`和`writableObjectMode`分别被设置为`true`.
+这里的 _ObjectMode_ 用于设置Stream对象的读写权限.
 
-通常のNode.js Streamは[Buffer](https://nodejs.org/api/buffer.html)というバイナリーデータを扱います。
-この[Buffer](https://nodejs.org/api/buffer.html)はStringと相互変換が可能できます。
-しかし、一方で複数の値を持ったオブジェクトのようなものは扱えません。
+一般来说Node.js Stream 操作[Buffer](https://nodejs.org/api/buffer.html)这种二进制数据,[Buffer](https://nodejs.org/api/buffer.html)可以与string互相转换,但是,不可以操作复杂类型比如Object.
 
-そのため、Node.js Streamには[Object Mode](https://nodejs.org/api/stream.html#stream_object_mode "Object Mode")があり、有効の場合はBufferやString以外のJavaScriptオブジェクトをStreamで流せるようになっています。
+因此, Node.js的Stream 提供了一种[Object Mode][Object Mode](https://nodejs.org/api/stream.html#stream_object_mode "Object Mode")如果启用此模式,Buffer或String以外的Javascript Object,也可以被Stream流化操作.
 
-Node.js Streamについては以下を合わせて参照するといいでしょう。
+关于Node.js Stream更进一步的阅读可以参考以下文章.
 
 - [Stream Node.js Manual & Documentation](https://nodejs.org/api/stream.html "Stream Node.js Manual &amp; Documentation")
 - [substack/stream-handbook](https://github.com/substack/stream-handbook "substack/stream-handbook")
 
 ### vinyl
 
-gulpでは[vinyl](https://github.com/gulpjs/vinyl "vinyl")オブジェクトがStreamで流れてきます。
-このvinylは _Virtual file format_ という呼ばれているもので、ファイル情報と中身をラップしたgulp用に作成された抽象フォーマットです。
+gulp的[vinyl](https://github.com/gulpjs/vinyl "vinyl")Object也是一种Stream 流化对象。
+vinyl 被称为 _Virtual file format_ (虚拟文件格式) 是gulp创建的一种包含了文件信息与文件内容的抽象格式.
 
-なぜこういった抽象フォーマットが必要なのかは次のことを考えてみると分かりやすいです。
+通过以下的几条需求,可以很容易理解我们为什么需要这种抽象文件格式
 
-- Streamで流れてきたデータの拡張子を知りたい
-- Streamで流れてきたデータの読み取り属性をチェックしたい
-- Streamで流れてきたデータと同じ場所にファイルを書き出したい
+- 我们需要获知流数据的文件后缀
+- 我们需要获知流数据的可读属性
+- 我们需要写文件到与流数据相同的路径
 
-ファイルの中身だけがStreamで流れた場合は、ファイルのパスや読み取り属性などの詳細な情報を知ることができません。
-そのため、`gulp.src`で読み込んだファイルはvinylでラップされ、ファイルの中身は`contents`として参照できるようになっています。
+如果流数据中只包含内容,我们就无法获知文件的路径,可读属性等细节.因此,通过`gulp.src`读取的文件被包装成vinyl虚拟文件,文件的内容可以通过`contents`引用.
 
-### vinylの中身を処理する
+### 在vinyl中处理contents
 
-次はTransform Streamの具体的な処理を見てみましょう。
+让我们看看Transform Stream的具体实现
 
 ```js
-// file は `vinyl` オブジェクト
+// file is a `vinyl` Object
 if (file.isBuffer()) {
     file.contents = prefixBuffer(file.contents, prefix);
 }
@@ -165,12 +154,11 @@ if (file.isStream()) {
 }
 ```
 
-`vinyl`抽象フォーマットの`contents`プロパティには、読み込んだファイルのBufferまたはStreamが格納されています。
-そのため両方のパターンに対応したコードする場合はどちらが来ても問題ないように書く必要があります。
+文件可能读取为Buffer或Stream存储于`vinyl`抽象格式的`contents`属性中, 所以两种patterns都需要写出.
 
-> **NOTE**: gulp pluginは必ずしも両方のパターンに対応しないといけないのではなく、Bufferだけに対応したものも多いです。しかし、その場合にStreamが来た時のErrorイベントを通知することがガイドラインで推奨されています。 - [gulp/guidelines.md at master · gulpjs/gulp](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md "gulp/guidelines.md at master · gulpjs/gulp")
+> **NOTE**: gulp plugin 并不强制要求两种pattern, 很多插件仅支持Buffer, 所以, 官方guideline建议添加异常处理.- [gulp/guidelines.md at master · gulpjs/gulp](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md "gulp/guidelines.md at master · gulpjs/gulp")
 
-`contents`にどちらのタイプが格納されているかは、ひとつ前のStreamで決定されます。
+`contents`中究竟存储着哪种类型取决于前序Stream
 
 ```js
 gulp.src("./*.*")
@@ -178,10 +166,10 @@ gulp.src("./*.*")
     .pipe(gulp.dest("build"));
 ```
 
-この場合は、`gulp.src`により決定されます。
-`gulp.src`はデフォルトでは、`contents`にBufferを格納するので、この場合はBufferで処理されることになります。
+在上面的例子中, 取决于`gulp.src`
+因为`gulp.src` 默认存成buffer形式,所以这里会按照buffer进行处理.
 
-`gulp.src`はオプションに`{ buffer: false }`を渡すことで`contents`にStreamを流すことも可能です。
+`gulp.src` 通过传入`{ buffer: false }`参数也可以指定输出为Stream形式.
 
 ```js
 gulp.src("./*.*", { buffer: false })
@@ -189,9 +177,9 @@ gulp.src("./*.*", { buffer: false })
         .pipe(gulp.dest("build"));
 ```
 
-### 変換処理
+### 变换处理
 
-最後にBufferとStreamそれぞれの変換処理を見てみます。
+最后,我们看一下Buffer和Stream之间的转换处理
 
 ```js
 export function prefixBuffer(buffer, prefix) {
@@ -211,93 +199,87 @@ export function prefixStream(prefix) {
 }
 ```
 
-やってきたBufferの先頭に`prefix`の文字列をBufferとして結合して返すだけの処理が行われています。
+这样,`prefix` 字符串就合并到文件Buffer的前部了.
 
-この変換処理はgulpに依存したものではないため、通常のライブラリに渡して処理するということが可能です。
-BufferはStringと相互変換が可能なので、多くのgulpプラグインと呼ばれるものは、`gulpPrefixer`と`prefixBuffer`にあたる部分だけを実装しています。
+转换过程并不依赖于gulp,你也可以传入到其它的库中进行处理.因为Buffer和String可以直接变换,很多gulp插件可能只会实现`gulpPrefixer`和`prefixBuffer`部分.
 
-つまり、prefixを付けるといった変換処理は、既存のライブラリで行うことができるようになっています。
+换句话说,像这种添加prefix的变换处理很可能通过加载既有库来完成.
 
-gulpプラグインは[vinyl](https://github.com/gulpjs/vinyl "vinyl")オブジェクトのデータをプラグイン同士でやり取りし、
-そのインタフェースとして既存のNode.js Streamを使っているといえます。
+gulp在插件间以[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象的形式传递数据,可以说(vinyl)使用Node.js Stream 作为它的interface.
 
-## エコシステム
+## 生态
 
-gulpのプラグインが行う処理は「入力に対して出力を返す」が主となっています。
-この受け渡すデータとして[vinyl](https://github.com/gulpjs/vinyl "vinyl")オブジェクトを使い、受け渡すAPIのインタフェースとしてNode.js Streamを使っています。
+gulp单个插件的的运作过程可以总结为「输出数据作为(下一)插件的输入」。而这是通过[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象将Node.js Stream作为interface来实现的.
 
-gulpではプラグインがもつ機能は1つ(単機能)とすることを推奨しています。
+gulp 建议插件按单一功能设计(single function)
 
 > Your plugin should only do one thing, and do it well.
 > -- [gulp/guidelines.md](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md "gulp/guidelines.md at master · gulpjs/gulp")
 
-gulpは既存のNode.js Streamに乗ることで独自のAPIを使わずに解決しています。
+gulp直接使用了Node.js Stream而避免了开发自己的API
 
-元々、Transform Streamは1つの変換処理を行うことが得意なので、その変換処理を`pipe`を繋げることで複数の処理を行うことができます。
+Transform Stream 在单一变换处理中具有很好的表现,所以你可以通过`pipe`将多个处理进程串联.
 
-また、gulpはタスク自動化ツールなので、既存のライブラリをそのままタスクとして使いやすくすることが重要だといえます。
-Node.js Streamのデフォルトでは流れるデータが`Buffer`となり、そのままでは既存のライブラリでは扱いにくい問題を
-データとして[vinyl](https://github.com/gulpjs/vinyl "vinyl")オブジェクトを流すことで緩和しています。
+因为gulp是个自动化任务工具,所以让既有的库能够很容易的被当做task来使用是非常重要的.而Node.js的Stream默认以`Buffer`传递数据,这使得既有库难以处理这些数据,因此引入了[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象作为数据.
 
-このようにして、gulpはタスクに必要な単機能のプラグインを既存のライブラリで作りやすくしています。
-これにより再利用できるプラグインが多くできることでエコシステムを構築しているといえます。
+通过这种方式,gulp让使用既有库开发单功能插件变得简单.
+从生态上来说,这让gulp拥有大量可重用的插件变得可能.
 
-## どのような用途に向いている?
+## 适用于哪些场合?
 
-gulp自体はデータの流れを管理するだけで、タスクを実現するためにはプラグインが重要になります。
-タスクにはさまざまな処理が想定されるため、必要になるプラグインも種類がさまざまなものとなります。
+gulp自身仅仅管理数据流,具体的任务由插件完成,根据不同的任务需求,插件的种类也多种多样.
 
-gulpでは[vinyl](https://github.com/gulpjs/vinyl "vinyl")オブジェクトを中間フォーマットと決めたことで、
-既存のライブラリをラップしただけのプラグインが作りやすくなっています。
+gulp将[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象定义为一种中间格式,它让使用既有库创建插件变得十分简单.
 
-またgulpは、Gruntとは異なり、タスクをJavaScriptのコードして表現します。
-これにより、プラグインの組み合わせだけだと実現できない場合に、直接コードを書くことで対応するといった対処法を取ることができます。
+另外,与Grunt不同的是,gulp直接用javascript定义任务.有时候当无法通过一组插件完成某些任务时,你可以直接写代码解决.
 
-そのため、プラグインの行う処理が予測できない場合に、中間フォーマットとデータの流し方だけを決めるというやり方は向いています。
+因此,在插件的处理过程不可确定的情况下,只要解决如何将数据通过中间格式传递就可以了.
 
-まとめると
+结论
 
-- 既存のライブラリをプラグイン化しやすい
-- 必要なプラグインがない場合も、設定としてコードを書くことで対応できる
+- 既有库可以很容易转换成task插件
+- 如果没有现成的插件,也可以直接写在setting里
 
-## どのような用途に向いていない?
+## 不适用于哪些场合?
 
+通常我们(完成一个任务)需要用到多个插件的组合,但是多个插件组合也容易发生问题.
 プラグインを複数組み合わせ扱うものに共通することですが、プラグインの組み合わせ問題はgulpでも発生します。
 
-たとえば、[Browserify](https://github.com/substack/node-browserify)はNode.js Streamを扱えますが、
-変換の開始点としていない場合に問題が発生します。
+比如,[Browserify](https://github.com/substack/node-browserify)也使用Node.js的Stream.
+但如果不指定起始点,就会抛出错误. 译注:这里指browserify需要在插件的options里指定entries,具体看以下文档
 
 - [gulp/browserify-transforms.md at master · gulpjs/gulp](https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-transforms.md "gulp/browserify-transforms.md at master · gulpjs/gulp")
 
-また、gulpは単機能のプラグインを推奨していますが、これはAPIとしてそういう制限があるわけではないためあくまでルールとなっています。
+另外,虽然gulp建议插件按单一功能设计,但这只是`建议`, gulp并没有从API层面作出这样的限制.
 
-このような問題に対してgulpはガイドラインやレシピといったドキュメントを充実させることで対処しています。
+gulp`解决`这个问题的方法只是给出了guidelines和recipes这样的文档.
 
 - [gulp/docs at master · gulpjs/gulp](https://github.com/gulpjs/gulp/tree/master/docs "gulp/docs at master · gulpjs/gulp")
 
-既存のライブラリをプラグイン化しやすい一方、
-プラグインとライブラリのオプションが異なったり、利用者はプラグイン化したライブラリの扱い方を学ぶ必要があります。
+容易将既有库包装成插件,也意味着插件之间的options并未遵循统一的规则,每一个插件都有自己的一套规则,用户需要自己学习每一个插件的配置方式.
 
-ライブラリとプラグインの作者が異なるケースも多いため、同様の機能をもつプラグインが複数できたり、質もバラバラとなりやすいです。
+(因为插件开发十分容易)经常出现相似的功能,有好几个不同作者写的插件, 这也导致插件的质量难以保证,选择起来较为麻烦.
 
-まとめると
+结论
 
-- プラグインの組み合わせ問題は利用者が解決しないといけない
-- 同様の機能をもつプラグインが生まれやすい
+- 插件组合的问题要由用户自行解决
+- 插件功能重复的情况很常见
 
-## この仕組みを使っているもの
+## 使用这种机制的案例
 
 - [sighjs/sigh](https://github.com/sighjs/sigh "sighjs/sigh")
-    - gulpプラグインそのものをサポートしています。
+    - 兼容gulp插件
 
-## まとめ
+## 总结
 
-ここではgulpのプラグインアーキテクチャについて学びました。
+本章我们学习了gulp plugin的构建方式
 
-- gulpはタスク自動化ツール
-- JavaScriptで設定を書くことができる
-- gulpは中間フォーマットとデータの流れを決めている
-- 中間フォーマットは[vinyl](https://github.com/gulpjs/vinyl "vinyl")オブジェクト
-- データの流れは既存のNode.js Stream
-- 既存のライブラリをラップしたプラグインが作りやすい
-- 同様の機能をもつプラグインが登場しやすい
+- gulp是自动化任务工具
+- 任务可以用javascript书写
+- gulp管理中间格式和数据流
+- 中间格式[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象
+- 数据流通过 Node.js Stream 实现
+- 使用既有库创建插件十分容易
+- 插件功能重复的情况很常见
+
+

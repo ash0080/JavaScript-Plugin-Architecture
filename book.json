@@ -1,9 +1,9 @@
 {
   "gitbook": "3.x.x",
   "title": "JavaScript Plugin Architecture",
-  "description": "JavaScriptライブラリやツールのプラグインの仕組み",
-  "githubId": "azu/JavaScript-Plugin-Architecture",
-  "author": "azu",
+  "description": "JavaScript库和工具中的插件是如何工作的(中文版)",
+  "githubId": "ash0080/JavaScript-Plugin-Architecture",
+  "author": "ash0080",
   "pdf": {
     "fontFamily": "nato-sans"
   },
@@ -11,16 +11,16 @@
     "include-codeblock",
     "richquotes",
     "edit-link",
-    "japanese-support",
+    "chinese-support",
     "ga",
     "github"
   ],
   "pluginsConfig": {
     "github": {
-      "url": "https://github.com/azu/JavaScript-Plugin-Architecture"
+      "url": "https://github.com/ash0080/JavaScript-Plugin-Architecture"
     },
     "edit-link": {
-      "base": "https://github.com/azu/JavaScript-Plugin-Architecture/edit/master/",
+      "base": "https://github.com/ash0080/JavaScript-Plugin-Architecture/edit/master/",
       "label": "Edit This Page"
     },
     "ga": {
