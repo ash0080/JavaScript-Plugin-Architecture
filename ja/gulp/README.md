@@ -198,7 +198,7 @@ export function prefixStream(prefix) {
 ```
 
 只是将前缀字符串转换成buffer加到传入的buffer之前.
-转换过程并不依赖于gulp,你也可以在这里调用既有库处理数据.因为Buffer和String可以直接变换,很多gulp插件可能只会实现`gulpPrefixer`和`prefixBuffer`部分.(译注:还是在说很多插件只实现buffer格式)
+转换过程并不依赖于gulp,你也可以在这里调用既有库处理数据.因为Buffer和String可以直接转换,很多gulp插件可能只会实现`gulpPrefixer`和`prefixBuffer`部分.(译注:还是在说很多插件只实现buffer格式)
 
 换句话说,像这种添加prefix的变换处理很可能通过加载既有库来完成.
 
@@ -215,29 +215,29 @@ gulp建议单一插件只完成单一功能(single function)
 > -- [gulp/guidelines.md](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md "gulp/guidelines.md at master · gulpjs/gulp")
 
 gulp直接使用了Node.js Stream而避免了开发另外的API
-Transform Stream在单一变换处理中具有很好的表现,所以你可以通过`pipe`将多个处理进程串联.
+Transform Stream对于完成单一变换步骤很好用.而对于多个变换步骤,可以通过`pipe`串联.
 
-因为gulp是个自动化任务工具,所以让既有的库能够很容易的被当做task来使用是非常重要的.而Node.js的Stream默认以`Buffer`传递数据,这使得既有库难以处理这些数据,因此引入了[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象作为数据.
+因为gulp是个自动化任务工具,所以让既有的库能够很容易的在task中使用是非常重要的.而Node.js的Stream默认以`Buffer`传递数据,于是引入了[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象来传递数据,让使用既有库变得更容易实现.
 
 通过这种方式,gulp让使用既有库开发单功能插件变得简单.
 从生态上来说,这让gulp拥有大量可重用的插件变得可能.
 
-## 适用于哪些场合?
+## 适用于哪些场景?
 
 gulp自身仅仅管理数据流,具体的任务由插件完成,根据不同的任务需求,插件的种类也多种多样.
 
 gulp将[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象定义为一种中间格式,它让使用既有库创建插件变得十分简单.
 
-另外,与Grunt不同的是,gulp直接用javascript定义任务.有时候当无法通过一组插件完成某些任务时,你可以直接写代码解决.
+另外,与Grunt不同的是,gulp直接用javascript定义任务.有时候当无法通过一组插件完成某个任务时,你可以直接写代码解决.
 
-因此,在插件的处理过程不可确定的情况下,只要解决如何将数据通过中间格式传递就可以了.
+因此,如果前序插件具体做了什么不可知,我们只需要知道(传递出的)中间数据格式和数据流就可以了.
 
 结论
 
 - 既有库可以很容易转换成task插件
 - 如果没有现成的插件,也可以直接写在setting里
 
-## 不适用于哪些场合?
+## 不适用于哪些场景?
 
 通常我们(完成一个任务)需要用到多个插件的组合,但是多个插件组合也容易发生问题.
 プラグインを複数組み合わせ扱うものに共通することですが、プラグインの組み合わせ問題はgulpでも発生します。
