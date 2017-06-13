@@ -239,11 +239,10 @@ gulp将[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象定义为一种中�
 
 ## 不适用于哪些场景?
 
-通常我们(完成一个任务)需要用到多个插件的组合,但是多个插件组合也容易发生问题.
-プラグインを複数組み合わせ扱うものに共通することですが、プラグインの組み合わせ問題はgulpでも発生します。
+在gulp中,我常常要组合多个插件一起使用,不过,组合插件使用也会出现一些问题.
 
-比如,[Browserify](https://github.com/substack/node-browserify)也使用Node.js的Stream.
-但如果不指定起始点,就会抛出错误. 译注:这里指browserify需要在插件的options里指定entries,具体看以下文档
+比如,[Browserify](https://github.com/substack/node-browserify)也能够处理Node.js Stream.
+但如果使用时不位于起始点,就会抛出错误.译注:这里指browserify必须用在整个Stream flow的最前面.
 
 - [gulp/browserify-transforms.md at master · gulpjs/gulp](https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-transforms.md "gulp/browserify-transforms.md at master · gulpjs/gulp")
 
@@ -253,9 +252,9 @@ gulp`解决`这个问题的方法只是给出了guidelines和recipes这样的文
 
 - [gulp/docs at master · gulpjs/gulp](https://github.com/gulpjs/gulp/tree/master/docs "gulp/docs at master · gulpjs/gulp")
 
-容易将既有库包装成插件,也意味着插件之间的options并未遵循统一的规则,每一个插件都有自己的一套规则,用户需要自己学习每一个插件的配置方式.
+一方面glup能很容易将既有库封装成插件,另一方面也意味着各个插件之间的options并没有统一的规划(每个插件都有自己的一套配置规则),用户需要自己学习每一种插件的配置方式.
 
-(因为插件开发十分容易)经常出现相似的功能,有好几个不同作者写的插件, 这也导致插件的质量难以保证,选择起来较为麻烦.
+(因为插件开发比较容易)经常出现好几个不同作者开发的功能却很相似的插件,这也导致插件的质量难以保证,选择起来较为麻烦.
 
 结论
 
@@ -269,14 +268,14 @@ gulp`解决`这个问题的方法只是给出了guidelines和recipes这样的文
 
 ## 总结
 
-本章我们学习了gulp plugin的构建方式
+本章我们学习了gulp plugin的构建方式,可归纳为:
 
 - gulp是自动化任务工具
 - 任务可以用javascript书写
-- gulp管理中间格式和数据流
+- gulp本身只管理中间格式和数据流
 - 中间格式[vinyl](https://github.com/gulpjs/vinyl "vinyl")对象
 - 数据流通过 Node.js Stream 实现
-- 使用既有库创建插件十分容易
-- 插件功能重复的情况很常见
+- 将既有库封装成插件十分容易
+- 插件功能重复的情况较常见
 
 
