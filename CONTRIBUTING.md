@@ -2,7 +2,7 @@
 
 ## Installation
 
-インストールにはNode.jsが必要です
+需要安装Node.js
 
     git clone https://github.com/azu/JavaScript-Plugin-Architecture.git
     cd JavaScript-Plugin-Architecture
@@ -10,62 +10,62 @@
 
 ## Usage
 
-この書籍は[GitBook](https://github.com/GitbookIO/gitbook "GitBook")を使い書かれています。
+本书使用[GitBook](https://github.com/GitbookIO/gitbook "GitBook")编写.
 
-### 表示の確認
+### 显示
 
-`npm start`でGitBookのローカルサーバを立ち上げて表示を確認できます。
+`npm start`将运行GitBook本地服务器显示本书内容.
 
     npm start
 
-### テスト
+### 测试
 
-`npm test`でコードや文章の単語チェックを行えます
+`npm test`运行代码和文本检查
 
     npm test
 
-### 文章カバレッジ
+### 文本覆盖率检查
 
-[textlint](https://github.com/textlint/textlint "textlint")と[textlint-formatter-codecov](https://github.com/azu/textlint-formatter-codecov "textlint-formatter-codecov")を使って出してる文章に対するカバレッジ
+[textlint](https://github.com/textlint/textlint "textlint")和[textlint-formatter-codecov](https://github.com/azu/textlint-formatter-codecov "textlint-formatter-codecov")用于文本覆盖率检查.
 
-100％を理想的目標として、それに対する現実的な値をカバレッジの％として表現しています。
+理想目标是100%, 实际值一百分比呈现
 
 [![codecov.io](https://codecov.io/github/azu/JavaScript-Plugin-Architecture/coverage.svg?branch=master)](https://codecov.io/github/azu/JavaScript-Plugin-Architecture?branch=master)
 
 ![coverage graph](https://codecov.io/github/azu/JavaScript-Plugin-Architecture/branch.svg?branch=master)
 
-現在の文章カバレッジは次のコマンドでも確認することができます。
-
+也可以使用以下命令检查文本覆盖率
 ```
 npm run textlint:coverage
 ```
 
-## Contributeのやりかた
+## Contribute 贡献
 
-この書籍ではJavaScriptにおけるプラグインアーキテクチャを色々なライブラリやツールを元に紹介する形をとっています。
+本文通过多个库和工具讨论javascript的插件架构设计
 
-Contributeは大きく分けて、既存の文章の修正や執筆とProposalの提案などがあります。
+Contribute大致可分为已有文章修正和建议
 
 
-## 文章の修正
+## 文章的修正
 
-typoなどを見つけた場合は、1文字の修正からでも問題無いので、Pull Requestを送っていただけると助かります。
+如果发现书写错误,即使是一个字,也欢迎您发送Pull Request给我.
 
-表記揺れを発見した場合は単純にIssueを立ててもらうか、Pull Requestでの修正をいただけると嬉しいです。
+如果您发现书中存在着用词或术语使用不统一的情况, 我也很乐意接受您通过Pull Request发送的修订.
 
-また、この書籍では[test/prh-rule.yaml](test/prh-rule.yaml)で定義した辞書を使い表記揺れを辞書でテストできるようにしています。
-辞書による表記揺れの検知が可能なら、そちらも合わせてご指摘いただけるとありがたいです。
+另外,本书使用[test/prh-rule.yaml](test/prh-rule.yaml)中所定义的辞典,来检查用词统一情况,所以辞典中的词条检测是可能的,如果存在问题也欢迎指正
 
 - [textlint + prhで表記ゆれを検出する | Web Scratch](http://efcl.info/2015/09/14/textlint-rule-prh/ "textlint + prhで表記ゆれを検出する | Web Scratch")
 
 ```
-## Proposalの書き方
+## 建议
 
 Proposalとは、書籍に載せたいプラグインアーキテクチャについてのIssueを立てることを言います。
 
+例如,要提交一个关于库/工具 xxx 的 issue.
 たとえば、XXXというライブラリ/ツールのアーキテクチャについてのIssueを立てる場合、
 次のようなことが1行とかでもいいので書かれていれば参考になります。
 
+如果某章节的内容
 仕組みについて調べるのが大変な場合は飛ばしても問題ありません。
 JavaScriptはとにかく柔軟な言語なので、こういうプラグインの形式を取ってるというのを知らせるだけでも有用だと思います。
 
